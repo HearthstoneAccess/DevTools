@@ -1,0 +1,244 @@
+diff --git a/Assembly-CSharp/AbsDeckPickerTrayDisplay.cs b/Assembly-CSharp/AbsDeckPickerTrayDisplay.cs
+index 719faac..88bd6ce 100644
+--- a/Assembly-CSharp/AbsDeckPickerTrayDisplay.cs
++++ b/Assembly-CSharp/AbsDeckPickerTrayDisplay.cs
+@@ -1695,7 +1695,7 @@ public abstract class AbsDeckPickerTrayDisplay : MonoBehaviour
+ 
+ 		var selectedAdventure = AdventureConfig.Get().SelectedAdventure;
+ 
+-		return selectedAdventure == AdventureDbId.BOH;
++		return selectedAdventure == AdventureDbId.BOH||selectedAdventure == AdventureDbId.BOM;
+     }
+ 
+     protected void PressBackButton()
+diff --git a/Assembly-CSharp/Accessibility/AccessibilityUtils.cs b/Assembly-CSharp/Accessibility/AccessibilityUtils.cs
+index 5aff8ec..5248ced 100644
+--- a/Assembly-CSharp/Accessibility/AccessibilityUtils.cs
++++ b/Assembly-CSharp/Accessibility/AccessibilityUtils.cs
+@@ -36,6 +36,22 @@ namespace Accessibility
+             }
+         }
+ 
++        public static void LogDebugText(string text)
++        {
++            try
++            {
++                if (!s_logEnabled)
++                {
++                    return;
++                }
++
++                Log.Accessibility_text.Print(text);
++            }
++            catch (Exception e)
++            {
++                LogFatalError(e);
++            }
++        }
+         public static string CurateText(string text)
+         {
+             if (text == null || text.Length == 0)
+@@ -45,37 +61,37 @@ namespace Accessibility
+ 
+             try
+             {
+-                LogDebug($"CT Before: {text}");
++                LogDebugText($"CT Before: {text}");
+                 text = text.Trim();
+                 text = FixWeirdText(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = HandleNewLines(text);
+                 text = HandleSequentialBolds(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = RemoveHTMLTags(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = RemoveLooseFormattingTags(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = RemoveReadOnlyCharacters(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = RemoveAttackHealthParenthesisText(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = FixForwardSlashes(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = CapitalizeSentences(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = RemoveUnderscores(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = CollapsePeriods(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = NormalizeSpaces(text);
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 text = text.Trim();
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 //text = ExpandPlusSigns(text); // Not sure due to localization
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+                 //text = ConvertNumbersToWrittenNumbers(text); // Bad idea as it breaks localization
+-                LogDebug($"CT: {text}");
++                LogDebugText($"CT: {text}");
+ 
+                 if (text.Length == 0)
+                 {
+@@ -84,7 +100,7 @@ namespace Accessibility
+ 
+                 text = AddPeriodIfNeeded(text);
+ 
+-                LogDebug($"CT After: {text}");
++                LogDebugText($"CT After: {text}");
+ 
+                 return text;
+             }
+diff --git a/Assembly-CSharp/Accessibility/AccessibleAdventureScene.cs b/Assembly-CSharp/Accessibility/AccessibleAdventureScene.cs
+index d6ea092..277a6f4 100644
+--- a/Assembly-CSharp/Accessibility/AccessibleAdventureScene.cs
++++ b/Assembly-CSharp/Accessibility/AccessibleAdventureScene.cs
+@@ -16,7 +16,7 @@ namespace Accessibility
+ 
+         private AccessibleHorizontalMenu<AccessiblePracticeAIButton> m_chooseOpponentMenu;
+ 
+-        private AdventureChooserTray m_adventureChooserTray;
++    private AdventureChooserTray m_adventureChooserTray;
+ 
+         private List<CustomDeckPage> m_customDeckPages;
+ 
+@@ -79,6 +79,7 @@ namespace Accessibility
+ 
+             m_curMenu.AddOption(LocalizationUtils.Get(LocalizationKey.SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_PRACTICE_OPTION), OnChoosePracticeAdventure);
+             m_curMenu.AddOption(LocalizationUtils.Get(LocalizationKey.SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_BOOK_OF_HEROES_OPTION), OnChooseBookOfHeroesAdventure);
++                        m_curMenu.AddOption(LocalizationUtils.Get(LocalizationKey.SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_BOOK_OF_MERCENARIES_OPTION), OnChooseBookOfMercsAdventure);
+             m_curMenu.AddOption(LocalizedText.SCREEN_GO_BACK, OnGoBackToHub);
+ 
+             m_curMenu.StartReading();
+@@ -111,6 +112,10 @@ namespace Accessibility
+         {
+             ChooseAdventure(AdventureDbId.BOH, AdventureModeDbId.DUNGEON_CRAWL);
+         }
++        private void OnChooseBookOfMercsAdventure()
++        {
++            ChooseAdventure(AdventureDbId.BOM, AdventureModeDbId.DUNGEON_CRAWL);
++        }
+ 
+         public void OnAdventureChooserTrayAwake(AdventureChooserTray adventureChooserTray)
+         {
+diff --git a/Assembly-CSharp/Accessibility/HearthstoneAccessConstants.cs b/Assembly-CSharp/Accessibility/HearthstoneAccessConstants.cs
+index 13db5aa..7cd6137 100644
+--- a/Assembly-CSharp/Accessibility/HearthstoneAccessConstants.cs
++++ b/Assembly-CSharp/Accessibility/HearthstoneAccessConstants.cs
+@@ -4,7 +4,7 @@ namespace Accessibility
+ {
+     public class HearthstoneAccessConstants
+     {
+-        public static string HEARTHSTONE_VERSION = "24.6.0.154818";
++        public static string HEARTHSTONE_VERSION = "25.0.0.158725";
+ 
+         public static string HEARTHSTONE_ACCESS_VERSION = "46";
+ 
+diff --git a/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs b/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
+index f3ccaa3..2e59ce4 100644
+--- a/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
++++ b/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
+@@ -697,6 +697,7 @@ public class LocalizationKey
+     public static LocalizationKey SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_TITLE = CreateKey("ACCESSIBILITY_SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_TITLE");
+     public static LocalizationKey SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_PRACTICE_OPTION = CreateKey("GLUE_PRACTICE");
+     public static LocalizationKey SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_BOOK_OF_HEROES_OPTION = CreateKey("ACCESSIBILITY_SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_BOOK_OF_HEROES_OPTION");
++    public static LocalizationKey SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_BOOK_OF_MERCENARIES_OPTION = CreateKey("ACCESSIBILITY_SCREEN_CHOOSE_ADVENTURE_SCREEN_MENU_BOOK_OF_MERCENARIES_OPTION");
+     public static LocalizationKey SCREEN_CHOOSE_ADVENTURE_SCREEN_PRACTICE_CHOOSE_DIFFICULTY_MENU_TITLE = CreateKey("ACCESSIBILITY_SCREEN_CHOOSE_ADVENTURE_SCREEN_PRACTICE_CHOOSE_DIFFICULTY_MENU_TITLE");
+     public static LocalizationKey SCREEN_CHOOSE_ADVENTURE_SCREEN_PRACTICE_CHOOSE_DIFFICULTY_MENU_NORMAL_OPTION = CreateKey("ACCESSIBILITY_SCREEN_CHOOSE_ADVENTURE_SCREEN_PRACTICE_CHOOSE_DIFFICULTY_MENU_NORMAL_OPTION");
+     public static LocalizationKey SCREEN_CHOOSE_ADVENTURE_SCREEN_PRACTICE_CHOOSE_DIFFICULTY_MENU_EXPERT_OPTION = CreateKey("ACCESSIBILITY_SCREEN_CHOOSE_ADVENTURE_SCREEN_PRACTICE_CHOOSE_DIFFICULTY_MENU_EXPERT_OPTION");
+diff --git a/Assembly-CSharp/AdventureDungeonCrawlDisplay.cs b/Assembly-CSharp/AdventureDungeonCrawlDisplay.cs
+index 8d62f4b..aa6de46 100644
+--- a/Assembly-CSharp/AdventureDungeonCrawlDisplay.cs
++++ b/Assembly-CSharp/AdventureDungeonCrawlDisplay.cs
+@@ -3335,7 +3335,7 @@ public class AdventureDungeonCrawlDisplay : MonoBehaviour, AccessibleScreen
+ 
+     private bool SupportedAdventure()
+     {
+-		return m_dungeonCrawlData.GetSelectedAdventure() == AdventureDbId.BOH;
++		return m_dungeonCrawlData.GetSelectedAdventure() == AdventureDbId.BOH||m_dungeonCrawlData.GetSelectedAdventure() == AdventureDbId.BOM;
+     }
+ 
+     public void HandleInput()
+diff --git a/Assembly-CSharp/GuestHeroPickerTrayDisplay.cs b/Assembly-CSharp/GuestHeroPickerTrayDisplay.cs
+index f280d14..fc1e2d6 100644
+--- a/Assembly-CSharp/GuestHeroPickerTrayDisplay.cs
++++ b/Assembly-CSharp/GuestHeroPickerTrayDisplay.cs
+@@ -701,10 +701,14 @@ public class GuestHeroPickerTrayDisplay : AbsDeckPickerTrayDisplay, AccessibleSc
+ 		var menuTitle = LocalizationUtils.Get(LocalizationKey.SCREEN_ADVENTURE_SCREEN_CHOOSE_ADVENTURER_TITLE);
+ 		var accessibleHeroPickerButtons = new AccessibleHorizontalMenu<AccessibleHeroPickerButton>(this, menuTitle, PressBackButton);
+ 
+-		var numSupportedBoHHeroes = 7; // Jaina, Rexxar, Garrosh, Uther, Anduin, Valeera, Thrall
+-
++		var numSupportedBoHHeroes = 11; // Jaina, Rexxar, Garrosh, Uther, Anduin, Valeera, Thrall
++				var numSupportedBoMHeroes = 10; // Jaina, Rexxar, Garrosh, Uther, Anduin, Valeera, Thrall
++		var selectedAdventure = AdventureConfig.Get().SelectedAdventure;
++		var numSupported=0;
++		if(selectedAdventure==AdventureDbId.BOH) numSupported=numSupportedBoHHeroes;
++		if(selectedAdventure==AdventureDbId.BOM) numSupported=numSupportedBoMHeroes;
+ 		//foreach (var hb in m_heroButtons)
+-		for (var i = 0; i < numSupportedBoHHeroes; i++)
++		for (var i = 0; i < numSupported; i++)
+         {
+ 			var hb = m_heroButtons[i];
+ 
+diff --git a/Assembly-CSharp/Log.cs b/Assembly-CSharp/Log.cs
+index 569d1af..160245b 100644
+--- a/Assembly-CSharp/Log.cs
++++ b/Assembly-CSharp/Log.cs
+@@ -10,10 +10,11 @@ using UnityEngine;
+ public static class Log
+ {
+ 	private const string ACCESSIBILITY_LOG_NAME = "Accessibility";
++	private const string ACCESSIBILITY_TEXT_LOG_NAME = "Accessibility_text";
+ 
+ 	private static readonly List<string> s_legacyHearthstoneLoggers = new List<string>
+ 	{
+-		ACCESSIBILITY_LOG_NAME, "All", "AchievementManager", "Achievements", "AdTracking", "Adventures", "Arena", "Asset", "AsyncLoading", "BattlegroundsAuthoring", "BattleNet",
++		ACCESSIBILITY_LOG_NAME, "All", "AchievementManager", "Achievements", ACCESSIBILITY_TEXT_LOG_NAME, "AdTracking", "Adventures", "Arena", "Asset", "AsyncLoading", "BattlegroundsAuthoring", "BattleNet",
+ 		"BIReport", "Box", "BreakingNews", "BugReporter", "CardbackMgr", "ChangedCards", "ClientRequestManager", "CloudStorage", "CollectionDeckBox", "CollectionManager",
+ 		"CoinManager", "ConfigFile", "ContentConnect", "Crafting", "CRM", "Dbf", "DeckHelper", "DeckRuleset", "Decks", "DeckTray",
+ 		"DeepLink", "DelayedReporter", "DeviceEmulation", "Downloader", "EndOfGame", "ErrorReporter", "EventTable", "EventTiming", "ExceptionReporter", "FaceDownCard",
+@@ -25,7 +26,7 @@ public static class Log
+ 		"UIFramework", "UIStatus", "UserAttention", "W8Touch", "Zone"
+ 	};
+ 
+-	private static readonly LogInfo[] DEFAULT_LOG_INFOS = new LogInfo[6]
++	private static readonly LogInfo[] DEFAULT_LOG_INFOS = new LogInfo[7]
+ 	{
+ 		new LogInfo
+ 		{
+@@ -49,6 +50,14 @@ public static class Log
+ 			m_defaultLevel = LogLevel.Info
+ 		},
+ 		new LogInfo
++		{
++			m_name = ACCESSIBILITY_TEXT_LOG_NAME,
++			m_filePrinting = true,
++			m_consolePrinting = false,
++			m_minLevel = LogLevel.Info,
++			m_defaultLevel = LogLevel.Info
++		},
++				new LogInfo
+ 		{
+ 			m_name = "Login",
+ 			m_filePrinting = true,
+@@ -73,7 +82,7 @@ public static class Log
+ 	public static Logger All => GetLoggerFromSystem("All");
+ 
+ 	public static Logger Accessibility => GetLoggerFromSystem(ACCESSIBILITY_LOG_NAME);
+-
++	public static Logger Accessibility_text => GetLoggerFromSystem(ACCESSIBILITY_TEXT_LOG_NAME);
+ 	public static Logger Achievements => GetLoggerFromSystem("Achievements");
+ 
+ 	public static Logger AdTracking => GetLoggerFromSystem("AdTracking");
