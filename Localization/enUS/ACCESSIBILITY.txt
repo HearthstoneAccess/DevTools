@@ -74,6 +74,9 @@ ACCESSIBILITY_READ_CARD_COST	{0} mana	0=card cost
 ACCESSIBILITY_READ_CARD_DURABILITY	{0} durability	0=durability e.g. 1 durability, for a location
 ACCESSIBILITY_READ_CARD_ATK_HEALTH	{0} {1}	0=attack 1=health e.g. 3 2
 ACCESSIBILITY_READ_CARD_ATK_DURABILITY	{0} {1}	0=attack 1=durability e.g. 1 3
+ACCESSIBILITY_READ_CARD_RUNE_BLOOD	Blood	The blood death knight rune
+ACCESSIBILITY_READ_CARD_RUNE_FROST	Frost	The frost death knight rune
+ACCESSIBILITY_READ_CARD_RUNE_UNHOLY	Unholy	The unholy death knight rune
 ACCESSIBILITY_READ_HERO_CARD_ATK	{0} attack	0=attack
 ACCESSIBILITY_READ_HERO_CARD_HEALTH	{0} health	0=health
 ACCESSIBILITY_READ_HERO_CARD_ARMOR	{0} armor	0=armor
