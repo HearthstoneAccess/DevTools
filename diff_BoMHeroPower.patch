@@ -1,0 +1,48 @@
+diff --git a/Assembly-CSharp/Accessibility/AccessibleGameplay.cs b/Assembly-CSharp/Accessibility/AccessibleGameplay.cs
+index 78285a9..44a4dfe 100644
+--- a/Assembly-CSharp/Accessibility/AccessibleGameplay.cs
++++ b/Assembly-CSharp/Accessibility/AccessibleGameplay.cs
+@@ -44,6 +44,7 @@ namespace Accessibility
+         protected AccessibleGamePhase m_curPhase;
+ 
+         protected AccessibleGameState m_curState;
++        private bool IsInBeginningChooseOne=false;//used to allow player to pick options after their mulligan.
+ 
+         protected AccessibleGameState m_prevState;
+ 
+@@ -332,7 +333,7 @@ namespace Accessibility
+                 return;
+             }
+ 
+-            if (GameState.Get().IsMulliganPhase())
++            if (GameState.Get().IsMulliganPhase()&&!IsInBeginningChooseOne)
+             {
+                 m_curPhase = AccessibleGamePhase.MULLIGAN;
+             }
+@@ -987,7 +988,6 @@ namespace Accessibility
+             {
+                 return; // yield
+             }
+-
+             try
+             {
+                 m_cardBeingRead = m_accessibleChoiceCards.GetItemBeingRead();
+@@ -1931,6 +1931,7 @@ namespace Accessibility
+             try
+             {
+                 m_curPhase = AccessibleGamePhase.PLAYING;
++                IsInBeginningChooseOne=false;
+                 m_curState = AccessibleGameState.WAITING;
+                 AccessibleHistoryMgr.Get().Reset();
+ 
+@@ -2020,8 +2021,9 @@ namespace Accessibility
+                 cards.ForEach(c => accessibleCards.Add(AccessibleCard.CreateCard(this, c)));
+ 
+                 m_accessibleChoiceCards = new AccessibleListOfItems<AccessibleCard>(this, accessibleCards);
+-
+                 AccessibilityMgr.Output(this, choiceBanner.m_headline.Text);
++                                m_curPhase = AccessibleGamePhase.PLAYING;
++                                            IsInBeginningChooseOne=true;
+                 m_accessibleChoiceCards.StartReading();
+             }
+             catch (Exception e)

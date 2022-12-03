@@ -1,0 +1,55 @@
+diff --git a/Assembly-CSharp/Accessibility/AccessibleCard.cs b/Assembly-CSharp/Accessibility/AccessibleCard.cs
+index 0fc259c..75f5e84 100644
+--- a/Assembly-CSharp/Accessibility/AccessibleCard.cs
++++ b/Assembly-CSharp/Accessibility/AccessibleCard.cs
+@@ -198,6 +198,10 @@ namespace Accessibility
+                 var durability = m_card.GetEntity().GetCurrentDurability();
+                 return LocalizationUtils.Format(LocalizationKey.READ_CARD_ATK_DURABILITY, atk, durability);
+             }
++            else if (m_card.GetEntity().IsLocation()) {
++                // This is internally tracked as health, but most game literature refers to it as durability so we do too
++                return LocalizationUtils.Format(LocalizationKey.READ_CARD_DURABILITY, m_card.GetEntity().GetCurrentHealth());
++            }
+             else if (m_card.GetEntity().IsHero())
+             {
+                 var atk = m_card.GetEntity().GetATK();
+diff --git a/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs b/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs
+index 6e84ffa..6b97bb7 100644
+--- a/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs
++++ b/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs
+@@ -89,6 +89,11 @@ namespace Accessibility
+             {
+                 return LocalizationUtils.Format(LocalizationKey.READ_CARD_ATK_DURABILITY, entityDef.GetATK(), entityDef.GetDurability());
+             }
++            else if (entityDef.GetCardType() == TAG_CARDTYPE.LOCATION)
++            {
++                // This is internally tracked as health, but most game literature refers to it as durability so we do too
++                return LocalizationUtils.Format(LocalizationKey.READ_CARD_DURABILITY, entityDef.GetHealth());
++            }
+             else if (entityDef.GetCardType() == TAG_CARDTYPE.HERO)
+             {
+                 var atk = entityDef.GetATK();
+@@ -325,6 +330,11 @@ namespace Accessibility
+ 
+ 		internal static bool IsReady(Card card)
+ 		{
++			if (card.GetEntity().IsLocation())
++			{
++				return (card.GetEntity().GetZone() == TAG_ZONE.PLAY) && (!card.GetEntity().IsExhausted());
++			}
++
+             var actorStateType = card?.GetActor()?.GetActorStateType();
+ 
+             return actorStateType == ActorStateType.CARD_POWERED_UP || actorStateType == ActorStateType.CARD_COMBO;
+diff --git a/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs b/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
+index e27ffb7..3b38209 100644
+--- a/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
++++ b/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
+@@ -109,6 +109,7 @@ public class LocalizationKey
+     public static LocalizationKey READ_CARD_COST = CreateKey("ACCESSIBILITY_READ_CARD_COST");
+     public static LocalizationKey READ_CARD_ATK_HEALTH = CreateKey("ACCESSIBILITY_READ_CARD_ATK_HEALTH");
+     public static LocalizationKey READ_CARD_ATK_DURABILITY = CreateKey("ACCESSIBILITY_READ_CARD_ATK_DURABILITY");
++    public static LocalizationKey READ_CARD_DURABILITY = CreateKey("ACCESSIBILITY_READ_CARD_DURABILITY");
+     public static LocalizationKey READ_HERO_CARD_ATK = CreateKey("ACCESSIBILITY_READ_HERO_CARD_ATK");
+     public static LocalizationKey READ_HERO_CARD_HEALTH = CreateKey("ACCESSIBILITY_READ_HERO_CARD_HEALTH");
+     public static LocalizationKey READ_HERO_CARD_ARMOR = CreateKey("ACCESSIBILITY_READ_HERO_CARD_ARMOR");

@@ -1,0 +1,27 @@
+diff --git a/Assembly-CSharp/AchieveManager.cs b/Assembly-CSharp/AchieveManager.cs
+index f1a93ea..6d151c7 100644
+--- a/Assembly-CSharp/AchieveManager.cs
++++ b/Assembly-CSharp/AchieveManager.cs
+@@ -378,11 +378,19 @@ public class AchieveManager : IService, IHasUpdate
+ 
+     public bool HasUnlockedDefaultHeroes()
+     {
+-        // 21.0.0.88998 broke a bunch of stuff around this such as the quest markers
+-        // 23.2.0.138759 seems to have fixed it but I'll keep my impl for now
+-        return NumDefaultHeroesUnlocked() == GameUtils.ORDERED_HERO_CLASSES.Length;
++        int i = 0;
++        for (int num = GameUtils.DEFAULT_HERO_CLASSES.Length; i < num; i++)
++        {
++            NetCache.HeroLevel heroLevel = GameUtils.GetHeroLevel(GameUtils.DEFAULT_HERO_CLASSES[i]);
++            if (heroLevel == null || heroLevel.CurrentLevel.Level == 0)
++            {
++                return false;
++            }
++        }
++        return true;
+     }
+ 
++
+     public bool HasUnlockedArena()
+     {
+         return HasUnlockedDefaultHeroes();

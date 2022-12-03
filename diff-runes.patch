@@ -1,0 +1,72 @@
+diff --git a/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs b/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs
+index 6b97bb7..4b42430 100644
+--- a/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs
++++ b/Assembly-CSharp/Accessibility/AccessibleCardUtils.cs
+@@ -45,6 +45,7 @@ namespace Accessibility
+             }
+ 
+             ret.Add(GetCardCost(entityDef.GetCost())); // x mana
++            AddLineIfExists(GetRunes(entityDef), ret);
+ 
+             AddLineIfExists(GetResourcesForEntityDef(entityDef), ret); // Resources
+             AddLineIfExists(entityDef.GetCardTextInHand(), ret); // Description
+@@ -176,6 +177,11 @@ namespace Accessibility
+             }
+         }
+ 
++        public static string GetRunes(EntityDef entityDef)
++        {
++            return AccessibleRuneUtils.StringifyRunePattern(entityDef.GetRuneCost());
++        }
++
+         public static List<string> GetQuestRewardCardLines(string cardId)
+         {
+             var ret = new List<string>();
+diff --git a/Assembly-CSharp/Accessibility/AccessibleRuneUtils.cs b/Assembly-CSharp/Accessibility/AccessibleRuneUtils.cs
+new file mode 100644
+index 0000000..49e363d
+--- /dev/null
++++ b/Assembly-CSharp/Accessibility/AccessibleRuneUtils.cs
+@@ -0,0 +1,25 @@
++using System.Collections.Generic;
++
++namespace Accessibility
++{
++    class AccessibleRuneUtils
++    {
++        public static string StringifyRunePattern(RunePattern rp)
++        {
++            List<string> runes = new List<string>();
++            if (rp.Blood > 0)
++            {
++                runes.Add(string.Format("{0} {1}", rp.Blood, LocalizationUtils.Get(LocalizationKey.READ_CARD_RUNE_BLOOD)));
++            }
++            if (rp.Frost > 0)
++            {
++                runes.Add(string.Format("{0} {1}", rp.Frost, LocalizationUtils.Get(LocalizationKey.READ_CARD_RUNE_FROST)));
++            }
++            if (rp.Unholy > 0)
++            {
++                runes.Add(string.Format("{0} {1}", rp.Unholy, LocalizationUtils.Get(LocalizationKey.READ_CARD_RUNE_UNHOLY)));
++            }
++            return AccessibleSpeechUtils.HumanizeList(runes);
++        }
++    }
++}
+\ No newline at end of file
+diff --git a/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs b/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
+index f5238c5..6ccc1b0 100644
+--- a/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
++++ b/Assembly-CSharp/Accessibility/Localization/LocalizationKey.cs
+@@ -792,6 +792,11 @@ public class LocalizationKey
+     // Collectible cards
+     public static LocalizationKey COLLECTION_CARD_NEW = CreateKey("GLUE_COLLECTION_CARD_NEW");
+ 
++    // Death knight runes
++    public static LocalizationKey READ_CARD_RUNE_BLOOD = CreateKey("ACCESSIBILITY_READ_CARD_RUNE_BLOOD");
++    public static LocalizationKey READ_CARD_RUNE_FROST = CreateKey("ACCESSIBILITY_READ_CARD_RUNE_FROST");
++    public static LocalizationKey READ_CARD_RUNE_UNHOLY = CreateKey("ACCESSIBILITY_READ_CARD_RUNE_UNHOLY");
++
+     // Tutorial
+     public static LocalizationKey TUTORIAL_LOADING_TUTORIAL = CreateKey("ACCESSIBILITY_TUTORIAL_LOADING_TUTORIAL");
+     public static LocalizationKey TUTORIAL_WELCOME_BACK = CreateKey("ACCESSIBILITY_TUTORIAL_WELCOME_BACK");
