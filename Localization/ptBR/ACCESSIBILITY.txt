@@ -159,6 +159,10 @@ ACCESSIBILITY_GAMEPLAY_SEE_ZONE_OPPONENT_WEAPON_EMPTY	Seu oponente não tem nem 
 ACCESSIBILITY_GAMEPLAY_READ_PLAYER_MANA_CURRENT_AND_TOTAL	Você tem {0} de {1} mana	0=current mana 1=total mana
 ACCESSIBILITY_GAMEPLAY_READ_PLAYER_MANA	Você tem {0} mana	0=current and total mana
 ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_MANA	Seu oponente tem {0} mana	0=current and total mana
+ACCESSIBILITY_GAMEPLAY_READ_PLAYER_CORPSES	Você tem {0} |4(cadáver,cadáveres)	0=current amount of corpses
+ACCESSIBILITY_GAMEPLAY_READ_PLAYER_CORPSES_EMPTY	Você não tem cadáveres	
+ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_CORPSES	Seu oponente não tem {0} |4(cadáver,cadáveres)	0=current amount of corpses
+ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_CORPSES_EMPTY	Seu oponente não tem cadáveres	
 ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_HAND	Mão de seu oponente. {0} |4(card,cards)	0=number of cards
 ACCESSIBILITY_GAMEPLAY_READ_PLAYER_DECK	Baralho. {0} |4(card,cards)	0=number of cards
 ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_DECK	Baralho de seu oponente. {0} |4(card,cards)	0=number of cards

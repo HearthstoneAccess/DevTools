@@ -159,6 +159,10 @@ ACCESSIBILITY_GAMEPLAY_SEE_ZONE_OPPONENT_WEAPON_EMPTY	Tu oponente no tiene un ar
 ACCESSIBILITY_GAMEPLAY_READ_PLAYER_MANA_CURRENT_AND_TOTAL	Tienes {0} de {1} maná	0=current mana 1=total mana
 ACCESSIBILITY_GAMEPLAY_READ_PLAYER_MANA	Tienes {0} maná	0=current and total mana
 ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_MANA	Tu oponente tiene {0} maná	0=current and total mana
+ACCESSIBILITY_GAMEPLAY_READ_PLAYER_CORPSES	tienes {0} |4(cadáver,cadáveres)	0=current amount of corpses
+ACCESSIBILITY_GAMEPLAY_READ_PLAYER_CORPSES_EMPTY	no tienes cadáveres	
+ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_CORPSES	Tu oponente tiene {0} |4(cadáver,cadáveres)	0=current amount of corpses
+ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_CORPSES_EMPTY	Tu oponente no tiene cadáveres	
 ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_HAND	Mano de tu oponente. {0} |4(carta,cartas)	0=number of cards
 ACCESSIBILITY_GAMEPLAY_READ_PLAYER_DECK	Tu mazo. {0} |4(carta,cartas)	0=number of cards
 ACCESSIBILITY_GAMEPLAY_READ_OPPONENT_DECK	Mazo de tu oponente. {0} |4(carta,cartas)	0=number of cards
