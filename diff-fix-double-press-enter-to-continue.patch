@@ -1,0 +1,29 @@
+diff --git a/Assembly-CSharp/EndGameTwoScoop.cs b/Assembly-CSharp/EndGameTwoScoop.cs
+index 750f016..4504010 100644
+--- a/Assembly-CSharp/EndGameTwoScoop.cs
++++ b/Assembly-CSharp/EndGameTwoScoop.cs
+@@ -75,6 +75,7 @@ public class EndGameTwoScoop : MonoBehaviour
+ 		if (heroLevel == null)
+ 		{
+ 			HideXpBar();
++			AccessibilityMgr.Output(parent, AccessibleSpeech.PRESS_ENTER_TO_CONTINUE);
+ 		}
+ 		else if (m_xpBarPrefab != null)
+ 		{
+@@ -87,7 +88,6 @@ public class EndGameTwoScoop : MonoBehaviour
+ 			}
+ 			else
+ 			{
+-                AccessibilityMgr.Output(parent, AccessibleSpeech.PRESS_ENTER_TO_CONTINUE);
+ 				m_xpBar.transform.parent = m_heroActor.transform;
+ 				m_xpBar.transform.localScale = new Vector3(0.9064f, 0.9064f, 0.9064f);
+ 				m_xpBar.transform.localPosition = new Vector3(-0.166f, 0.224f, -0.738f);
+@@ -97,7 +97,7 @@ public class EndGameTwoScoop : MonoBehaviour
+ 			m_xpBar.m_isAnimated = true;
+ 			m_xpBar.m_delay = BAR_ANIMATION_DELAY;
+ 			m_xpBar.m_levelUpCallback = PlayLevelUpEffect;
+-            m_xpBar.UpdateDisplay(parent, heroLevel, totalLevel, true);
++			m_xpBar.UpdateDisplay(AccessibleEndGameScreen.Get(), heroLevel, totalLevel, true);
+ 		}
+ 		else
+ 		{
